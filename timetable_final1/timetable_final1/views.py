@@ -147,8 +147,8 @@ def timetable_gen2(request):
 																'is_elective':temp_sub.is_elective,
 																'faculty':temp_fac_dict,
 																'sub_load':sub_scheme_detail.sub_load,
-																# 'sub_practical_class':(sub_scheme_detail.sub_practical_class)*(no_batch),
 																'sub_practical_class':(sub_scheme_detail.sub_practical_class)*(no_batch),
+																# 'sub_practical_class':(sub_scheme_detail.sub_practical_class)*(no_batch),
 																'sub_theory_class':sub_scheme_detail.sub_theory_class,
 																'sub_tutorial_class':sub_scheme_detail.sub_tutorial_class
 																}
@@ -187,7 +187,7 @@ def timetable_gen2(request):
 				if str(batch.batch_name) not in batch_list:
 					batch_list.append(str(batch.batch_name))
 		sem_batch[str(sem)]=batch_list
-	print(sem_batch)
+	# print(sem_batch)
 		# for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
 		# 	info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
 		# 	for k1 in info3.keys():
@@ -269,13 +269,14 @@ def timetable_gen2(request):
 		temp_sem=TimetableFinalSemester.select().where(TimetableFinalSemester.semester_name==sem).get()
 		timeslot_list=sem_timeslot[str(sem)]
 		subject_list=sem_sub[str(course)][str(discipline)][str(sem)]
+		# sem="1"
 		# print(sem,subject_list)
 		# print(subject_list)
 		total_batch=TimetableFinalSemesterBatch.get(TimetableFinalSemesterBatch.semester_table_id==temp_sem.id).no_batches	
-		print(total_batch,sem)
+		# print(total_batch,sem)
 		shift_dict={}
 		for shift in shift_list:
-			
+				
 			temp_shift=TimetableFinalShift.select().where(TimetableFinalShift.shift_name==str(shift)).get()
 			# print("Hello")
 
@@ -288,152 +289,254 @@ def timetable_gen2(request):
 				for batch in TimetableFinalSubjectBatch.select().where(TimetableFinalSubjectBatch.sub_code==temp_sub.sub_code):
 					batch_dict[str(batch.batch_name)]=0
 				subject_batch_counter[str(temp_sub.sub_name)]=batch_dict
-
+			print(day_list)
 			for d in day_list:
-				new_temp_dict={}
+				subject_list1=sem_sub[str(course)][str(discipline)][str(sem)]
+				if len(subject_list1)>0:
 
-				subject_counter={}
-				for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
-					info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
-					for k1 in info3.keys():
-						# sub1=info3[k1]
-						subject_counter[str(info3['sub_name'])]=0
-				# print(subject_counter)
-				sub_batch={}
-				# for d in day_list:
-				for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
-					info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
-					for k1 in info3.keys():
-						temp_sub_name=info3['sub_name']
-						temp_sub_code=info3['sub_code']
-						batch_list=[]
-						for b in TimetableFinalSubjectBatch.select().where(TimetableFinalSubjectBatch.sub_code==temp_sub_code):
-							batch_list.append(str(b.batch_name))
-						sub_batch[str(temp_sub_name)]=batch_list
-				# print(sub_batch)
+					new_temp_dict={}
 
-				faculty_counter={}
-				for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
-					info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
-	            	# print(sub_fac_detail[str(course)][str(discipline)][str(sem)][info4])
-	            	# print(info3)
-					for k1 in info3.keys():
-	               	# sub1=info3[k1]
-	               	# print(info3[k1],"Hello")
-						faculties=info3['faculty']
-						for k2 in faculties.keys():
-							fac1=faculties[k2]
-							faculty_counter[str(fac1['name'])]=0
+					subject_counter={}
+					for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
+						info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
+						for k1 in info3.keys():
+							# sub1=info3[k1]
+							subject_counter[str(info3['sub_name'])]=0
+					# print(subject_counter)
+					sub_batch={}
+					# for d in day_list:
+					for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
+						info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
+						for k1 in info3.keys():
+							temp_sub_name=info3['sub_name']
+							temp_sub_code=info3['sub_code']
+							batch_list=[]
+							for b in TimetableFinalSubjectBatch.select().where(TimetableFinalSubjectBatch.sub_code==temp_sub_code):
+								batch_list.append(str(b.batch_name))
+							sub_batch[str(temp_sub_name)]=batch_list
+					# print(sub_batch)
 
-				
+					faculty_counter={}
+					for info4 in sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)]:
+						info3=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][info4]
+		            	# print(sub_fac_detail[str(course)][str(discipline)][str(sem)][info4])
+		            	# print(info3)
+						for k1 in info3.keys():
+		               	# sub1=info3[k1]
+		               	# print(info3[k1],"Hello")
+							faculties=info3['faculty']
+							for k2 in faculties.keys():
+								fac1=faculties[k2]
+								faculty_counter[str(fac1['name'])]=0
+
+					
 
 
-				done_dict={}
-				temp_done_batch_list=[]
-				for sub in subject_list:
-					done_dict[str(sub)]=temp_done_batch_list
+					done_dict={}
+					temp_done_batch_list=[]
+					for sub in subject_list:
+						done_dict[str(sub)]=temp_done_batch_list
 
-				done_batch_list=[]
+					done_batch_list=[]
 
-				timeslot_dict={}
-				flag1=0
-				for i in range(0,len(timeslot_list)):
-					# print("Hello")
-					t=randint(0,6)
-					# print(t)
-					timeslot=timeslot_list[t]
-					if t not in temp_lab_list:
-						while t not in temp_lab_list:
-							t=randint(0,6)
-					timeslot=timeslot_list[t]
-					# print(timeslot,d)
-					# print(t)
-					# print("Hello",t)
-					flag=0
-					for lab in TimetableFinalSemesterLab.select().where(TimetableFinalSemesterLab.semester_table_id==temp_sem.id):
-						# if sem_lab[str(sem)][str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]==1:
-						if lab_available[str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]==1:
-							# lab_name=lab.lab.lab_name
-							# print("Hello")
-							# print(t)
-							
-							for x in range(0,total_batch):
-								# print(subject_list)
-								sub=random.choice(subject_list)
-								subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
-								prac=subject_detail['sub_practical_class']
-								batch_list1=sub_batch[str(sub)]
-								for b1 in batch_list:
-									if b1 in done_batch_list:
-										continue
-									else:
-										b=b1
-								# b=random.choice(batch_list1)
-								# if b in done_batch_list:
-								# 	print(d)
-								# 	b=random.choice(batch_list1)
-								if subject_batch_counter[str(sub)][str(b)]>=prac:
-									while subject_batch_counter[str(sub)][str(b)]>=prac:
-										print(sub,prac)
-										sub=random.choice(subject_list)
-										subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
-										prac=subject_detail['sub_practical_class']
-								# print(b,sub,d)
-										# batch_list1=sub_batch[str(sub)]
-										# b=random.choice(batch_list1)
-								# if subject_counter[str(sub)]>=4 or prac<=0 or prac%2!=0:
-								# 	print(subject_counter[str(sub)],sub,prac)
-									# while subject_counter[str(sub)]>=2 or prac<=0 or prac%2!=0:
-									# 	sub=random.choice(subject_list)						
+					timeslot_dict={}
+					flag1=0
+					for i in range(0,len(timeslot_list)):
+						# print("Hello")
+
+						t=randint(0,6)
+						# print(t)
+						timeslot=timeslot_list[t]
+						if t not in temp_lab_list:
+							while t not in temp_lab_list:
+								t=randint(0,6)
+						timeslot=timeslot_list[t]
+						# print(timeslot,d)
+						# print(t)
+						# print("Hello",t)
+						flag=0
+						# print(sem)
+						# print(done_batch_list,d)
+						for lab in TimetableFinalSemesterLab.select().where(TimetableFinalSemesterLab.semester_table_id==temp_sem.id):
+							# if sem_lab[str(sem)][str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]==1:
+							if lab_available[str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]==1:
+								# lab_name=lab.lab.lab_name
+								# print("Hello")
+								# print(t)
+
+								
+								for x in range(total_batch):
+									# print(sem)
+									# flag1=0
+									# while flag1==0:
+									# 	sub=random.choice(subject_list)
 									# 	subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
-									# 	print("Hello",sub,subject_counter[str(sub)])
 									# 	prac=subject_detail['sub_practical_class']
-								# print(sub)
-								if len(course_dict)>0:
-									pass
-								elif len(sem_dict)>0:
-									# print(b,d,sem<"UP")
-									faculties=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['faculty']
-									faculty_flag=0
-									for k in faculties:
-										inner_flag=0
-										fac1=faculties[k]
-										if fac1['work_load']<=0 or faculty_counter[str(fac1['name'])]>=4:
-											continue
-										else:
-											
-											# print(batch_list1,sem,sub)
+									# 	batch_list1=sub_batch[str(sub)]
+									# 	b=random.choice(batch_list1)
+									# 	if subject_batch_couter[str(sub)][str(b)]>=prac or b in done_batch_list:
+									# 		for batch in batch_list:
+									# 			if subject_batch_counter[str(sub)][str(batch)]<prac and batch not in done_batch_list:
+									# 				flag=1
+									# 				break
+
+									# print(subject_list)
+									# print(done_batch_list,d)
+									# if len(subject_list1)>0:
+									# 	sub=random.choice(subject_list1)
+									# 	subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
+									# 	prac=subject_detail['sub_practical_class']
+									# 	batch_list1=sub_batch[str(sub)]
+									# 	temp_sub_code1=TimetableFinalSubject.select().where(TimetableFinalSubject.sub_name==str(sub)).get()
+									# 	temp_sub_scheme1=TimetableFinalSubjectScheme.select().where(TimetableFinalSubjectScheme.sub_code==temp_sub_code1.sub_code).get()
+									# 	for b1 in batch_list1:
+									# 		if b1 not in done_batch_list and subject_batch_counter[str(sub)][str(b1)]<temp_sub_scheme1.sub_practical_class:
+									# 			b=b1
+									# 			print(b)
+									# 			break
+									# print(sub,prac,sem)
+									# b=random.choice(batch_list1)
+									# if b in done_batch_list:
+									# 	print(d)
+									# 	b=random.choice(batch_list1)
+									# if subject_batch_counter[str(sub)][str(b)]>=prac:
+									# 	while subject_batch_counter[str(sub)][str(b)]>=prac:
+									# 		print(sub,prac)
+									# 		sub=random.choice(subject_list)
+									# 		subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
+									# 		prac=subject_detail['sub_practical_class']
+									# print(b,sub,d)
+											# batch_list1=sub_batch[str(sub)]
 											# b=random.choice(batch_list1)
-											# print(b,t)
+									# if subject_counter[str(sub)]>=4 or prac<=0 or prac%2!=0:
+									# 	print(subject_counter[str(sub)],sub,prac)
+										# while subject_counter[str(sub)]>=2 or prac<=0 or prac%2!=0:
+										# 	sub=random.choice(subject_list)						
+										# 	subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
+										# 	print("Hello",sub,subject_counter[str(sub)])
+										# 	prac=subject_detail['sub_practical_class']
+									# print(sub)
+									if len(course_dict)>0:
+										pass
+									elif len(sem_dict)>0:
+										pass
+										# print(b,d,sem<"UP")
+										# faculties=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['faculty']
+										# faculty_flag=0
+										# for k in faculties:
+										# 	inner_flag=0
+										# 	fac1=faculties[k]
+										# 	if fac1['work_load']<=0 or faculty_counter[str(fac1['name'])]>=4:
+										# 		continue
+										# 	else:
+												
+										# 		# print(batch_list1,sem,sub)
+										# 		# b=random.choice(batch_list1)
+										# 		# print(b,t)
+												
+												
+										# 		for k1 in sem_dict.keys():
+										# 			temp_shift_dict=sem_dict[str(k1)]
+										# 			for k2 in temp_shift_dict.keys():
+										# 				temp_days_dict=temp_shift_dict[str(k2)]
+										# 				temp_timeslot_dict=temp_days_dict[str(d)]
+										# 				if str(t) in temp_timeslot_dict:
+										# 					temp_info=temp_timeslot_dict[str(t)]
+										# 					info=temp_info['value']
+										# 					if info['faculty']==str(fac1['name']):
+										# 						inner_flag=1
+										# 		if inner_flag==1:
+										# 			continue
+										# 		else:
+										# 			# print(done_batch_list)
+										# 			# batch_list1=sub_batch[str(sub)]
+										# 			# print(batch_list1,sem,sub)
+										# 			# b=random.choice(batch_list1)
+										# 			# if b in done_batch_list:
+										# 			# 	while b in done_batch_list:
+										# 			# 		# print(b,t)
+										# 			# 		b=random.choice(batch_list)
+										# 			new_temp_dict[str(b)]={'faculty':str(fac1['name']),'subject':str(sub),'batch':str(b),'lab':str(lab.lab.lab_name)}
+										# 			# print(b,sub,d,"Down",sem)
+										# 			v=t
+										# 			for t1 in range(0,2):
+										# 				timeslot=timeslot_list[v]
+										# 				timeslot_dict[str(timeslot)]={'lab':1,'classroom':0,'value':new_temp_dict}
+										# 				if str(fac1['name']) in faculty_counter:
+										# 					faculty_counter[str(fac1['name'])]+=1
+										# 				else:
+										# 					faculty_counter[str(fac1['name'])]=1
+										# 				fac1['work_load']-=1
+										# 				if str(sub) in subject_counter:
+										# 					subject_counter[str(sub)]+=1
+										# 				else:
+										# 					subject_counter[str(sub)]=1
+										# 				# sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['sub_practical_class']-=1
+										# 				subject_batch_counter[str(sub)][str(b)]+=1
+										# 				v+=1
+										# 				lab_available[str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]=0
+
+										# 			done_batch_list.append(b)
+										# 			# print(done_batch_list,d)
+										# 			flag=1
+										# 			break#faculty[k]
+									else:
+										if len(subject_list1)>0:
+											flag=0
+											while flag==0:
+												sub=random.choice(subject_list1)
+												subject_detail=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]
+												prac=subject_detail['sub_practical_class']
+												batch_list1=sub_batch[str(sub)]
+												temp_sub_code1=TimetableFinalSubject.select().where(TimetableFinalSubject.sub_name==str(sub)).get()
+												temp_sub_scheme1=TimetableFinalSubjectScheme.select().where(TimetableFinalSubjectScheme.sub_code==temp_sub_code1.sub_code).get()
+												for b1 in batch_list1:
+													# print(b1,d,sub)
+													if str(b1) not in done_batch_list and subject_batch_counter[str(sub)][str(b1)]<temp_sub_scheme1.sub_practical_class:
+														b=b1
+														print(b,sub,d,"allocated")
+														flag=1
+														break
+
+										# print(b)
+										# print("Hello")
+										# print(b,d,sem,"Down")
+										# print(sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)])
+										faculties=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['faculty']
+										# print(faculties)
+										# print(t)
+										faculty_flag=0
+										for k in faculties:
+											fac1=faculties[k]
 											
-											
-											for k1 in sem_dict.keys():
-												temp_shift_dict=sem_dict[str(k1)]
-												for k2 in temp_shift_dict.keys():
-													temp_days_dict=temp_shift_dict[str(k2)]
-													temp_timeslot_dict=temp_days_dict[str(d)]
-													if str(t) in temp_timeslot_dict:
-														temp_info=temp_timeslot_dict[str(t)]
-														info=temp_info['value']
-														if info['faculty']==str(fac1['name']):
-															inner_flag=1
-											if inner_flag==1:
+											if fac1['work_load']<=0 or faculty_counter[str(fac1['name'])]>=4:
+												# print("Hello","no")
+												print(str(fac1['name']),d)
 												continue
 											else:
-												# print(done_batch_list)
+												# print("Hello")
 												# batch_list1=sub_batch[str(sub)]
-												# print(batch_list1,sem,sub)
+												# print(batch_list1,sem,sub,d)
 												# b=random.choice(batch_list1)
+												# # print(b,t)
+												# # print(done_batch_list)
 												# if b in done_batch_list:
 												# 	while b in done_batch_list:
 												# 		# print(b,t)
 												# 		b=random.choice(batch_list)
+											
+												# print(done_batch_list,d)
+												# print(b,d)
+												print(b,d,"in")
 												new_temp_dict[str(b)]={'faculty':str(fac1['name']),'subject':str(sub),'batch':str(b),'lab':str(lab.lab.lab_name)}
-												# print(b,sub,d,"Down",sem)
 												v=t
+												# print(b,sub,d,"Down",sem)
+												# print(v)
 												for t1 in range(0,2):
+													# print(t)
 													timeslot=timeslot_list[v]
 													timeslot_dict[str(timeslot)]={'lab':1,'classroom':0,'value':new_temp_dict}
+													# print(timeslot_dict)
 													if str(fac1['name']) in faculty_counter:
 														faculty_counter[str(fac1['name'])]+=1
 													else:
@@ -443,87 +546,40 @@ def timetable_gen2(request):
 														subject_counter[str(sub)]+=1
 													else:
 														subject_counter[str(sub)]=1
-													# sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['sub_practical_class']-=1
+													sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['sub_practical_class']-=1
 													subject_batch_counter[str(sub)][str(b)]+=1
 													v+=1
 													lab_available[str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]=0
-
-												done_batch_list.append(b)
-												# print(done_batch_list,d)
+												
+												done_batch_list.append(str(b))
+												# print(done_batch_list,d,sub)
+												if sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['sub_practical_class']==0:
+													subject_list1.remove(sub)
+												# print(timeslot_dict,d)
 												flag=1
-												break#faculty[k]
-								else:
-									# print(b)
-									# print("Hello")
-									# print(b,d,sem,"Down")
-									# print(sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)])
-									faculties=sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['faculty']
-									# print(faculties)
-									# print(t)
-									faculty_flag=0
-									for k in faculties:
-										fac1=faculties[k]
-										if fac1['work_load']<=0 or faculty_counter[str(fac1['name'])]>=4:
-											# print("Hello","no")
-											continue
-										else:
-											# print("Hello")
-											# batch_list1=sub_batch[str(sub)]
-											# print(batch_list1,sem,sub,d)
-											# b=random.choice(batch_list1)
-											# # print(b,t)
-											# # print(done_batch_list)
-											# if b in done_batch_list:
-											# 	while b in done_batch_list:
-											# 		# print(b,t)
-											# 		b=random.choice(batch_list)
-										
-											# print(done_batch_list,d)
-											new_temp_dict[str(b)]={'faculty':str(fac1['name']),'subject':str(sub),'batch':str(b),'lab':str(lab.lab.lab_name)}
-											v=t
-											print(b,sub,d,"Down",sem)
-											# print(v)
-											for t1 in range(0,2):
-												# print(t)
-												timeslot=timeslot_list[v]
-												timeslot_dict[str(timeslot)]={'lab':1,'classroom':0,'value':new_temp_dict}
-												# print(timeslot_dict)
-												if str(fac1['name']) in faculty_counter:
-													faculty_counter[str(fac1['name'])]+=1
-												else:
-													faculty_counter[str(fac1['name'])]=1
-												fac1['work_load']-=1
-												if str(sub) in subject_counter:
-													subject_counter[str(sub)]+=1
-												else:
-													subject_counter[str(sub)]=1
-												# sub_fac_detail[str(course)][str(discipline)][str(sem)][str(shift)][str(sub)]['sub_practical_class']-=1
-												subject_batch_counter[str(sub)][str(b)]+=1
-												v+=1
-												lab_available[str(lab.lab.lab)][str(shift)][str(d)][str(timeslot)]=0
-											done_batch_list.append(b)
-											flag=1
-											break#faculty['k']
-											# faculty_flag=1
-											# if faculty_flag==1:
-											# 	inner_flag=1
-											# 	flag1=1
-											# 	break#k['faculty']
-							if flag==1:
-								flag1=1
-								break#l['lab']
-						# else:
-						# 	#search for lab available
-						# 	continue
-					if flag1==1:
-						break#timeslot
-					# if flag1==1:
-					# 	break		
-				days_dict[str(d)]=timeslot_dict
-			shift_dict[str(shift)]=days_dict
-		sem_dict[str(sem)]=shift_dict
-	discipline_dict[str(discipline)]=sem_dict
-	course_dict[str(course)]=discipline_dict
+												break#faculty['k']
+												# print(timeslot_dict,d)
+												# faculty_flag=1
+												# if faculty_flag==1:
+												# 	inner_flag=1
+												# 	flag1=1
+												# 	break#k['faculty']
+								if flag==1:
+									flag1=1
+									break#l['lab']
+							# else:
+							# 	#search for lab available
+							# 	continue
+						if flag1==1:
+							break#timeslot
+						# if flag1==1:
+						# 	break		
+					days_dict[str(d)]=timeslot_dict
+			return HttpResponse(json.dumps(days_dict), content_type="application/json")
+			# shift_dict[str(shift)]=days_dict
+		# sem_dict[str(sem)]=shift_dict
+	# discipline_dict[str(discipline)]=sem_dict
+	# course_dict[str(course)]=discipline_dict
 
 
 							
@@ -664,4 +720,4 @@ def timetable_gen2(request):
 		# 		days_dict[str(d)]=timeslot_dict
 		# 	course_dict[str(shift_name)]=days_dict
 	# return HttpResponse({"Hello":"Hello"}, content_type="application/json")
-	return HttpResponse(json.dumps(course_dict), content_type="application/json")
+	# return HttpResponse(json.dumps(course_dict[str(course)][str(discipline)][str(1)][str(shift)]), content_type="application/json")
